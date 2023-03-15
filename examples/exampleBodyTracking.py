@@ -1,6 +1,8 @@
 import cv2
 
 import pykinect_azure as pykinect
+import time
+import statistics
 
 if __name__ == "__main__":
 
@@ -9,8 +11,9 @@ if __name__ == "__main__":
 
 	# Modify camera configuration
 	device_config = pykinect.default_configuration
+	# print(device_config)
 	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_OFF
-	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_WFOV_2X2BINNED
+	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_NFOV_UNBINNED 
 	#print(device_config)
 
 	# Start device
@@ -20,6 +23,7 @@ if __name__ == "__main__":
 	bodyTracker = pykinect.start_body_tracker()
 
 	cv2.namedWindow('Depth image with skeleton',cv2.WINDOW_NORMAL)
+	tempi = []
 	while True:
 
 		# Get capture
@@ -33,7 +37,7 @@ if __name__ == "__main__":
 
 		# Get the colored body segmentation
 		ret_color, body_image_color = body_frame.get_segmentation_image()
-
+		tempi.append(time.time())
 		if not ret_depth or not ret_color:
 			continue
 			
@@ -49,3 +53,17 @@ if __name__ == "__main__":
 		# Press q key to stop
 		if cv2.waitKey(1) == ord('q'):  
 			break
+	period =[]
+	fps =[]
+	for i in range(1,len(tempi),1):
+		period.append(tempi[i]-tempi[i-1])
+		fps.append(1/period[-1])
+	mediat = statistics.mean(period)
+	stdt = statistics.stdev(period)
+	mediafps = statistics.mean(fps)
+	stdfps = statistics.stdev(fps)
+	print('mean period:', mediat)
+	print('std period:', stdt)
+	print('mean fps:', mediafps)
+	print('std fps:', stdfps)
+	
