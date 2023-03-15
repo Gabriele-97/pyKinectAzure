@@ -47,8 +47,17 @@ if __name__ == "__main__":
 		for body_id in range(body_frame.get_num_bodies()):
 			bodies = body_frame.get_body2d(body_id,pykinect.K4A_CALIBRATION_TYPE_DEPTH).numpy()
 			skeleton = body_frame.get_body(body_id).numpy()[:, :3]
-			stampstring = str(time.time()) + " " +" ".join(str(r) for v in skeleton for r in v) + "\n"
-			with open('teststatico.txt','a') as f:
+			if body_frame.get_num_bodies() != 0:
+				print(skeleton[0][0])
+				if skeleton[0][0] > 0:
+					subj = 0
+				else:
+					subj = 1
+			else:
+				subj = 0
+
+			stampstring = str(time.time()) + " " + str(subj) + " " +" ".join(str(r) for v in skeleton for r in v) + "\n"
+			with open('test2people_standing.txt','a') as f:
 				f.write(stampstring)
 
 			
