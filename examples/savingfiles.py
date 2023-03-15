@@ -48,7 +48,7 @@ if __name__ == "__main__":
 			bodies = body_frame.get_body2d(body_id,pykinect.K4A_CALIBRATION_TYPE_DEPTH).numpy()
 			skeleton = body_frame.get_body(body_id).numpy()[:, :3]
 			stampstring = str(time.time()) + " " +" ".join(str(r) for v in skeleton for r in v) + "\n"
-			with open('prova.txt','a') as f:
+			with open('teststatico.txt','a') as f:
 				f.write(stampstring)
 
 			
