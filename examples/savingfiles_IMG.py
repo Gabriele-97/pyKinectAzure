@@ -4,30 +4,34 @@ import pykinect_azure as pykinect
 import time
 import statistics
 import numpy as np
+import csv
 
 if __name__ == "__main__":
-
-	print('introduce the name of the file')
+	foldername = 'Azure_Validation'
+	print('Input the name of the file')
 	filename = input()
-
 	# Initialize the library, if the library is not found, add the library path as argument
 	pykinect.initialize_libraries(track_body=True)
 
 	# Modify camera configuration
 	device_config = pykinect.default_configuration
 	# print(device_config)
-	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_OFF
-	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_NFOV_UNBINNED
+	device_config.color_resolution = pykinect.K4A_COLOR_RESOLUTION_1080P
+	device_config.depth_mode = pykinect.K4A_DEPTH_MODE_NFOV_UNBINNED # WE CAN TRY TO CHANGE MODE TO WFOV
 	#print(device_config)
 
 	# Start device
-	device = pykinect.start_device(config=device_config)
+	filepath = 'c://Users//laura//Documents//pyKinectAzure//' + foldername + '//'
+	video_path = filepath + filename + '_video.avi'
+
+	device = pykinect.start_device(config=device_config,  record=True, record_filepath=video_path)
 
 	# Start body tracker
 	bodyTracker = pykinect.start_body_tracker()
 
 	cv2.namedWindow('Depth image with skeleton',cv2.WINDOW_NORMAL)
 	tempi = []
+	imagebuffer = []
 	while True:
 
 		# Get capture
@@ -62,10 +66,14 @@ if __name__ == "__main__":
 				subj = 0
 
 			stampstring = str(time.time()) + " " + str(subj) + " " +" ".join(str(r) for v in skeleton for r in v) + "\n"
-			with open('c://Users//laura//Documents//pyKinectAzure//Azure_Validation//'+ filename + '.txt' ,'a') as f:
+			with open('c://Users//laura//Documents//pyKinectAzure//'+ foldername + '//' + filename + str(tempi[0]) + '.txt','a') as f:
 				f.write(stampstring)
 
-			
+		
+		# with open(filename +'.csv',  'a', newline='') as file:
+		# 	writer = csv.writer(file)		
+		# 	writer.writerow(color_image)
+
 		# Combine both images
 		try:
 			color_image_rsz = cv2.resize(color_image,(640,576))
@@ -94,4 +102,6 @@ if __name__ == "__main__":
 	print('std period:', stdt)
 	print('mean fps:', mediafps)
 	print('std fps:', stdfps)
-	
+	 
+
+
