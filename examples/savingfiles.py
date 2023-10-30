@@ -86,6 +86,8 @@ if __name__ == "__main__":
 	for i in range(1,len(tempi),1):
 		period.append(tempi[i]-tempi[i-1])
 		fps.append(1/period[-1])
+	
+
 	mediat = statistics.mean(period)
 	stdt = statistics.stdev(period)
 	mediafps = statistics.mean(fps)
@@ -94,4 +96,7 @@ if __name__ == "__main__":
 	print('std period:', stdt)
 	print('mean fps:', mediafps)
 	print('std fps:', stdfps)
+	statistiche = str(mediafps) + ' ' + str(stdfps)
 	
+	with open('c://Users//laura//Documents//pyKinectAzure//Azure_Validation//'+ filename + 'statistics.txt' ,'a') as f:
+		f.write(statistiche)
